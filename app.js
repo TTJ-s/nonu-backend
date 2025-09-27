@@ -1,17 +1,17 @@
 // Import necessary modules and libraries
-const dotenv = require('dotenv');
+require("dotenv").config();
 const express = require('express');
 const cors = require('cors');
 const admin = require('firebase-admin');
 const volleyball = require('volleyball');
 
 // Load environment variables based on the current environment (development or production)
-if (process.env.NODE_ENV === 'development') {
-  dotenv.config({ path: './env/.env.development' }); // ! Load development environment variables
-}
-if (process.env.NODE_ENV === 'production') {
-  dotenv.config({ path: './env/.env.production' }); // ! Load production environment variable
-}
+// if (process.env.NODE_ENV === 'development') {
+//   dotenv.config({ path: './env/.env.development' }); // ! Load development environment variables
+// }
+// if (process.env.NODE_ENV === 'production') {
+//   dotenv.config({ path: './env/.env.production' }); // ! Load production environment variable
+// }
 
 const app = express();
 app.use(volleyball);
