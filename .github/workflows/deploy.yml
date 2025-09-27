@@ -1,4 +1,4 @@
-name: Node.js CI/CD with PM2
+name: Deploy Bethel Backend
 
 on:
   push:
@@ -29,45 +29,37 @@ jobs:
           username: ${{ env.SERVER_USER }}
           password: ${{ env.SERVER_PASSWORD }}
           script: |
-            set -e  # Exit on any error
-
-            echo "✅ Verifying Node.js and npm"
+            # Verify Node.js and npm installation
             node -v || { echo "Node.js not found"; exit 1; }
             npm -v || { echo "npm not found"; exit 1; }
 
-            echo "✅ Installing PM2 if missing"
+            # Install PM2 globally if not installed
             if ! command -v pm2 &> /dev/null; then
               sudo npm install -g pm2
             fi
 
-            echo "✅ Deploying repository"
+            # Clone the repository or pull the latest changes
             if [ -d "${{ env.PROJECT_DIR }}" ]; then
-              cd ${{ env.PROJECT_DIR }} || exit 1
-              git fetch --all
-              git reset --hard origin/main
+              cd ${{ env.PROJECT_DIR }}
+              git pull origin main
             else
               git clone https://github.com/${{ github.repository }} ${{ env.PROJECT_DIR }}
-              cd ${{ env.PROJECT_DIR }} || exit 1
+              cd ${{ env.PROJECT_DIR }}
             fi
 
-            echo "✅ Current directory: $(pwd)"
-            echo "✅ Installing dependencies"
+            # Install dependencies
+            cd nonu-backend
             npm install
 
-            echo "✅ Copying environment file"
+            # Copy environment file
             if [ -f "${{ env.ENV_FILE_PATH }}" ]; then
               cp ${{ env.ENV_FILE_PATH }} .env
             else
-              echo "❌ .env file missing at ${{ env.ENV_FILE_PATH }}"
+              echo ".env file missing at ${{ env.ENV_FILE_PATH }}"
               exit 1
             fi
 
-            echo "✅ Restarting app with PM2"
-            if pm2 describe ${{ env.APP_NAME }} > /dev/null 2>&1; then
-              pm2 restart ${{ env.APP_NAME }}
-            else
-              pm2 start npm --name ${{ env.APP_NAME }} -- run start
-            fi
-
+            # Restart the application with PM2
+            pm2 delete ${{ env.APP_NAME }} || true
+            pm2 start npm --name ${{ env.APP_NAME }} -- run start
             pm2 save
-            echo "🎉 Deployment completed successfully!"
