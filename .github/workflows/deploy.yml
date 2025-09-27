@@ -14,7 +14,7 @@ jobs:
       SERVER_IP: ${{ secrets.SERVER_IP }}
       SERVER_USER: ${{ secrets.SERVER_USER }}
       SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
-      ENV_FILE_PATH: /home/linuxuser/nonu/.env/.env.production
+      ENV_FILE_PATH: /home/linuxuser/nonu/.env/.env.development
       PROJECT_DIR: nonu-backend
       APP_NAME: nonu-backend
 
@@ -48,7 +48,7 @@ jobs:
             fi
 
             # Install dependencies
-            cd bethel_backend
+            cd nonu-backend
             npm install
 
             # Copy environment file
