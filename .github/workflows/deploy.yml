@@ -31,7 +31,7 @@ jobs:
           script: |
             # Use GitHub repo name as folder
             APP_NAME="${GITHUB_REPOSITORY##*/}"
-            APP_PATH="/home/nonu/apps/$APP_NAME"
+            APP_PATH="/home/linuxuser/apps/$APP_NAME"
 
             # Create folder if it doesn't exist
             mkdir -p "$APP_PATH"
@@ -42,7 +42,7 @@ jobs:
             git reset --hard origin/main
 
             # Load env from server
-            export $(grep -v '^#' /home/nonu/env/.env.development | xargs)
+            export $(grep -v '^#' /home/linuxuser/nonu/env/.env.development | xargs)
 
             # Install dependencies
             npm install
