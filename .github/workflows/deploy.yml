@@ -22,14 +22,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Deploy to Lightsail
+      - name: Deploy to Lightsail via SSH
         uses: appleboy/ssh-action@master
         with:
           host: ${{ env.SERVER_IP }}
           username: ${{ env.SERVER_USER }}
           password: ${{ env.SERVER_PASSWORD }}
           script: |
-            set -e  # Exit on any error
+            set -e
 
             echo "✅ Verifying Node.js and npm"
             node -v || { echo "Node.js not found"; exit 1; }
@@ -41,12 +41,17 @@ jobs:
             fi
 
             echo "✅ Deploying repository"
+            cd ~
             if [ -d "${{ env.PROJECT_DIR }}" ]; then
               cd ${{ env.PROJECT_DIR }}
               git fetch --all
               git reset --hard origin/main
             else
-              git clone https://github.com/${{ github.repository }} ${{ env.PROJECT_DIR }}
+              # Setup SSH for GitHub
+              mkdir -p ~/.ssh
+              chmod 700 ~/.ssh
+              ssh-keyscan github.com >> ~/.ssh/known_hosts
+              git clone git@github.com:TTJ-s/nonu-backend.git ${{ env.PROJECT_DIR }}
               cd ${{ env.PROJECT_DIR }}
             fi
 
