@@ -15,7 +15,7 @@ jobs:
       SERVER_USER: ${{ secrets.SERVER_USER }}
       SERVER_PASSWORD: ${{ secrets.SERVER_PASSWORD }}
       ENV_FILE_PATH: /home/linuxuser/nonu/.env/.env.development
-      PROJECT_DIR: nonu-backend
+      PROJECT_DIR: /home/linuxuser/nonu-backend
       APP_NAME: nonu-backend
 
     steps:
@@ -42,14 +42,15 @@ jobs:
 
             echo "✅ Deploying repository"
             if [ -d "${{ env.PROJECT_DIR }}" ]; then
-              cd ${{ env.PROJECT_DIR }}
+              cd ${{ env.PROJECT_DIR }} || exit 1
               git fetch --all
               git reset --hard origin/main
             else
               git clone https://github.com/${{ github.repository }} ${{ env.PROJECT_DIR }}
-              cd ${{ env.PROJECT_DIR }}
+              cd ${{ env.PROJECT_DIR }} || exit 1
             fi
 
+            echo "✅ Current directory: $(pwd)"
             echo "✅ Installing dependencies"
             npm install
 
