@@ -4,7 +4,7 @@ const therapistModel = require('../../../models/therapistModel');
 
 const displaySessionController = async (req, res) => {
   try {
-    const userId = res.locals.userkey;
+    const userId = res.locals.userId;
     const completedSessionCount = await sessionModel
       .find({ userId, status: 'completed' })
       .count();

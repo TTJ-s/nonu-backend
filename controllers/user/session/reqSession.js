@@ -38,7 +38,7 @@ const reqSessionController = async (req, res) => {
         false
       );
     }
-    const userId = res.locals.userkey;
+    const userId = res.locals.userId;
     const checkVerified = await userModel.findOne({
       _id: userId,
       status: 'accepted',

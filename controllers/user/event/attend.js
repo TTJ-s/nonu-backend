@@ -5,7 +5,7 @@ const EventAttendModel = require('../../../models/eventAttendModel');
 const eventAttendingController = async (req, res) => {
   try {
     const { eventId } = req.body;
-    const userId = res.locals.userkey;
+    const userId = res.locals.userId;
     if (!eventId)
       return responseMaker(res, 400, 'Event id is required', null, false);
     const checkNotified = await EventAttendModel.findOne({ eventId, userId });

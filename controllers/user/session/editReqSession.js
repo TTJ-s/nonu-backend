@@ -5,7 +5,7 @@ const sessionModel = require('../../../models/sessionModel');
 const editReqSessionController = async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const userId = res.locals.userkey;
+    const userId = res.locals.userId;
     const findSession = await sessionModel.findOne({
       _id: sessionId,
       userId,

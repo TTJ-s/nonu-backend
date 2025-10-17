@@ -4,12 +4,12 @@ const sessionModel = require('../../../models/sessionModel');
 const getUserSessionController = async (req, res) => {
   try {
     const { sessionId } = req.params;
-    const { userkey } = res.locals;
+    const { userId } = res.locals;
     if (!sessionId)
       return responseMaker(res, 400, 'Session id is required', null, false);
     const getSession = await sessionModel.findOne({
       _id: sessionId,
-      userkey,
+      userId,
     });
     if (getSession) {
       return responseMaker(res, 200, 'Sessions found..!', getSession, false);
