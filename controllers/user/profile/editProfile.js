@@ -4,7 +4,7 @@ const userModel = require('../../../models/userModel');
 
 const editProfileController = async (req, res) => {
   try {
-    const { userkey } = res.locals;
+    const { userId } = res.locals;
     const editProfileSchemaValidator = profileEditSchema.validate(req.body, {
       abortEarly: true,
     });
@@ -16,7 +16,7 @@ const editProfileController = async (req, res) => {
         editProfileSchemaValidator.error,
         false
       );
-    const findUser = await userModel.findOne({ _id: userkey });
+    const findUser = await userModel.findOne({ _id: userId });
     if (!findUser)
       return responseMaker(
         res,
@@ -25,7 +25,7 @@ const editProfileController = async (req, res) => {
         null,
         false
       );
-    if (findUser.isVerified) {
+    if (findUser.status === 'accepted') {
       if (req.body.idCard) {
         return responseMaker(
           res,
@@ -37,7 +37,7 @@ const editProfileController = async (req, res) => {
       }
     }
     const updateUser = await userModel.findOneAndUpdate(
-      { _id: userkey },
+      { _id: userId },
       req.body,
       { new: true }
     );
