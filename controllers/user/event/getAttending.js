@@ -8,7 +8,7 @@ const getEventAttendingController = async (req, res) => {
       return responseMaker(res, 400, 'Event id is required', null, false);
     const checkAttending = await eventAttendModel.findOne({
       eventId,
-      userId: res.locals.userkey,
+      userId: res.locals.userId,
     });
     if (checkAttending) {
       return responseMaker(
