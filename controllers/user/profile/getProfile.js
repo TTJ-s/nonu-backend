@@ -3,7 +3,7 @@ const userModel = require('../../../models/userModel');
 
 const getProfileController = async (req, res) => {
   try {
-    const uniqueKey = req.headers.userkey; // ? userkey from firebase
+    const uniqueKey = res.locals.userkey; // ? userkey from firebase
     if (!uniqueKey)
       return responseMaker(res, 403, 'User key is required', null, false);
     const findUser = await userModel.findOne({ uuid: uniqueKey });

@@ -32,6 +32,7 @@ const {
   fetchUniversityController,
   getCollegeController,
 } = require('../controllers/index');
+const { loginController } = require('../controllers/user/login');
 
 const userRoute = express.Router();
 // Define a filter function for multer file uploads
@@ -52,6 +53,7 @@ const filter = (req, file, cb) => {
 // Create a multer instance with the defined filter
 const upload = multer({ fileFilter: filter });
 // Define the routes and associate them with their respective controllers
+userRoute.post('/login', loginController);
 userRoute.get('/test', userValidator, userTestController); // ? UserValidator testController
 userRoute.get('/profile', userValidator, getProfileController); // ? GetUserProfileController
 userRoute.post('/profile', userValidator, profileRegController); // ? UserRegisterController

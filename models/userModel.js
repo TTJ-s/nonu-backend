@@ -13,6 +13,7 @@ const userSchema = mongoose.Schema(
     },
     phone: {
       type: String,
+      trim: true,
     },
     idCard: {
       type: String,

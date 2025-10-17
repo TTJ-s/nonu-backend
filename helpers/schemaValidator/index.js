@@ -1,7 +1,7 @@
 const Joi = require('joi');
 
 exports.profileRegSchema = Joi.object({
-  uuid: Joi.string().required(),
+  uuid: Joi.string(),
   fullName: Joi.string().required(),
   age: Joi.number().required(),
   phone: Joi.string().required(),

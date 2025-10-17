@@ -1,30 +1,28 @@
-const admin = require('firebase-admin');
+const jwt = require('jsonwebtoken');
 const responseMaker = require('../../helpers/responseMaker');
 const userModel = require('../../models/userModel');
 
 const userValidator = async (req, res, next) => {
-  const authToken = req.headers.authtoken; // ? usertoken from firebase
-  const uniqueKey = req.headers.userkey; // ? userkey from firebase
-  if (authToken == null || uniqueKey == null) {
-    return responseMaker(res, 403, 'Missing tokens', null, false);
-  } else {
-    const findUser = await userModel.findOne({ uuid: uniqueKey });
-    admin
-      .auth()
-      .verifyIdToken(req.headers.authtoken)
-      .then(() => {
-        if (findUser) {
-          // ! check if user exists or not
+  const authHeader = req.headers.authorization;
+  const jwtToken = authHeader && authHeader.split(' ')[1];
+  if (jwtToken == null)
+    return responseMaker(res, 403, 'Missing JWT token', null, false);
+  else {
+    try {
+      jwt.verify(jwtToken, process.env.JWT_SECRET, async (error, auth) => {
+        if (error)
+          return responseMaker(res, 403, 'Inavalid JWT token', null, false);
+        const fetchUser = await userModel.findOne({ _id: auth.userId });
+        if (fetchUser) {
           // eslint-disable-next-line no-underscore-dangle
-          res.locals.userkey = findUser._id; // ? if user exist set key from mongodb
-        } else {
-          res.locals.userkey = uniqueKey; // ? if user doesn't exist set key from firebase
+          res.locals.userId = fetchUser._id;
+          res.locals.userkey = fetchUser.uuid;
+          return next();
         }
-        next();
-      })
-      .catch((error) =>
-        responseMaker(res, 403, `Unauthorized, ${error.message}`, null, false)
-      );
+      });
+    } catch (error) {
+      return responseMaker(res, 500, 'Internal Server Error', null, error);
+    }
   }
 };
 
